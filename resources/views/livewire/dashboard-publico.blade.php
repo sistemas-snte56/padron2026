@@ -1,185 +1,196 @@
-<div>
-    {{-- HEADER --}}
-    <header style="background:#f5f5f5; border-bottom:2px solid #1E2D45; padding:1.5rem 2rem; display:flex; align-items:center; gap:1.2rem;">
-        <div style="width:48px;height:48px;background:linear-gradient(135deg,#3D8EFF,#ec660c);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:1.4rem;color:#fff;">
-            PS
-        </div>
-        <div>
-            <h1 style="font-family:'Montserrat',sans-serif;font-size:1.7rem;letter-spacing:0.06em;color:#ad9b49;line-height:1.1;">
-                Padrón de Sedes — Estado de Entrega
-            </h1>
-            <p style="font-size:0.75rem;color:#6B7FA3;font-family:'IBM Plex Mono',monospace;letter-spacing:0.05em;">
-                VERACRUZ
-            </p>
-        </div>
-        <span style="margin-left:auto;display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:#ec660c;">
-            ● EN VIVO
-        </span>
-    </header>
+<div class="min-h-screen bg-gray-50">
+    {{-- ═══════════════ HEADER ═══════════════ --}}
+    <header>
+        <div class="bg-[#9d2449] flex items-center h-[80px] md:h-[90px]">
 
-    <main style="max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem;">
-
-        {{-- KPI TARJETAS --}}
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem;">
-            <div style="background:#f5f5f5;border:1px solid #1E2D45;border-left:4px solid #3D8EFF;border-radius:12px;padding:1.4rem 1.6rem;">
-                <div style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;color:#6B7FA3;margin-bottom:0.5rem;">TOTAL SEDES</div>
-                <div style="font-family:'Montserrat',sans-serif;font-size:3rem;color:#3D8EFF;line-height:1;">{{ $total }}</div>
-                <div style="font-size:0.72rem;color:#6B7FA3;">registros en sistema</div>
-            </div>
-            <div style="background:#f5f5f5;border:1px solid #1E2D45;border-left:4px solid #ec660c;border-radius:12px;padding:1.4rem 1.6rem;">
-                <div style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;color:#6B7FA3;margin-bottom:0.5rem;">ENTREGADOS</div>
-                <div style="font-family:'Montserrat',sans-serif;font-size:3rem;color:#ec660c;line-height:1;">{{ $entregados }}</div>
-                <div style="font-size:0.72rem;color:#6B7FA3;">padrón completado</div>
-            </div>
-            <div style="background:#f5f5f5;border:1px solid #1E2D45;border-left:4px solid #9d2449;border-radius:12px;padding:1.4rem 1.6rem;">
-                <div style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;color:#6B7FA3;margin-bottom:0.5rem;">PENDIENTES</div>
-                <div style="font-family:'Montserrat',sans-serif;font-size:3rem;color:#9d2449;line-height:1;">{{ $pendientes }}</div>
-                <div style="font-size:0.72rem;color:#6B7FA3;">sin entregar</div>
-            </div>
-            <div style="background:#f5f5f5;border:1px solid #1E2D45;border-left:4px solid #ec660c;border-radius:12px;padding:1.4rem 1.6rem;">
-                <div style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;color:#6B7FA3;margin-bottom:0.5rem;">AVANCE</div>
-                <div style="font-family:'Montserrat',sans-serif;font-size:3rem;color:#ec660c;line-height:1;">{{ $porcentaje }}%</div>
-                <div style="font-size:0.72rem;color:#6B7FA3;">del total entregado</div>
-            </div>
-        </div> 
-
-        {{-- FILA: PASTEL + REGIÓN --}}
-        <div style="display:grid;grid-template-columns:1fr 2fr;gap:1.5rem;margin-bottom:2rem;">
-
-            {{-- Gráfica pastel --}}
-            <div style="background:#f5f5f5;border:1px solid #1E2D45;border-radius:12px;padding:1.8rem;">
-                <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.5em;letter-spacing:0.08em;color:#ee7a00;margin-bottom:1.4rem;padding-bottom:0.8rem;border-bottom:1px solid #1E2D45;">
-                    DISTRIBUCIÓN DE ENTREGA
-                </div>
-                <div style="position:relative;max-width:220px;margin:0 auto;">
-                    <canvas id="graficaPastel" width="220" height="220"></canvas>
-                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;">
-                        <div style="font-family:'Montserrat',sans-serif;font-size:2rem;color:#ec660c;line-height:1;">{{ $porcentaje }}%</div>
-                        <div style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:#6B7FA3;letter-spacing:0.08em;">ENTREGADO</div>
-                    </div>
-                </div>
-                <div style="display:flex;justify-content:center;gap:1.5rem;margin-top:1.2rem;">
-                    <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:#6B7FA3;">
-                        <div style="width:10px;height:10px;border-radius:50%;background:#ec660c;"></div> Entregado
-                    </div>
-                    <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:#6B7FA3;">
-                        <div style="width:10px;height:10px;border-radius:50%;background:#9d2449;"></div> Pendiente
-                    </div>
-                </div>
+            {{-- Fondo blanco con el logo --}}
+            <div class="bg-white flex items-center px-4 self-stretch">
+                <img src="{{ asset('images/logosnte56@4x-8.png') }}"
+                    alt="SNTE Sección 56 Veracruz"
+                    class="h-14 md:h-16 w-auto">
             </div>
 
-            {{-- Gráfica por región --}}
-            <div style="background:#f5f5f5;border:1px solid #1E2D45;border-radius:12px;padding:1.8rem;">
-                <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.5em;letter-spacing:0.08em;color:#ee7a00;margin-bottom:1.4rem;padding-bottom:0.8rem;border-bottom:1px solid #1E2D45;">
-                    ENTREGA POR REGIÓN
-                </div>
-                <canvas id="graficaRegion" height="180"></canvas>
+            {{-- Triángulo division.png --}}
+            <img src="{{ asset('images/division@4x-8.png') }}"
+                alt=""
+                class="h-[80px] md:h-[90px] w-auto flex-shrink-0">
+
+            {{-- Espacio central guinda --}}
+            <div class="flex-1"></div>
+
+            {{-- Logo La Unidad derecha --}}
+            <div class="hidden md:flex items-center px-6 flex-shrink-0">
+                <img src="{{ asset('images/logounidad@4x-8.png') }}"
+                    alt="La Unidad - Nuestra Fortaleza"
+                    class="h-14 w-auto">
             </div>
 
         </div>
 
-        {{-- SELECTOR PENDIENTES POR REGIÓN --}}
-        <div style="background:#f5f5f5;border:1px solid #1E2D45;border-radius:12px;padding:1.8rem;">
-            <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.5em;letter-spacing:0.08em;color:#ee7a00;margin-bottom:1.4rem;padding-bottom:0.8rem;border-bottom:1px solid #1E2D45;">
-                DELEGACIONES PENDIENTES POR REGIÓN
+        {{-- Franja naranja --}}
+        <div class="bg-[#f18c21] h-3"></div>
+    </header> 
+
+    {{-- 2. CONTENIDO PRINCIPAL --}}
+    <main class="max-w-7xl mx-auto px-6 py-10">
+
+        {{-- FILA DE INDICADORES (KPIs) --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white border border-[#1E2D45] border-l-4 border-l-blue-500 rounded-xl p-6 shadow-sm">
+                <div class="text-lg font-bold text-gray-800 uppercase tracking-widest mb-2">Total Sedes</div>
+                <div class="text-4xl font-bold text-blue-600 leading-none">{{ $total }}</div>
+                <div class="text-[0.8rem] font-semibold text-gray-400 mt-2 italic">registros totales</div>
+            </div>
+            <div class="bg-white border border-[#1E2D45] border-l-4 border-l-orange-600 rounded-xl p-6 shadow-sm">
+                <div class="text-lg font-bold text-gray-800 uppercase tracking-widest mb-2">Entregados</div>
+                <div class="text-4xl font-bold text-orange-600 leading-none">{{ $entregados }}</div>
+                <div class="text-[0.8rem] font-semibold text-gray-400 mt-2 italic">padrón completado</div>
+            </div>
+            <div class="bg-white border border-[#1E2D45] border-l-4 border-l-[#9d2449] rounded-xl p-6 shadow-sm">
+                <div class="text-lg font-bold text-gray-800 uppercase tracking-widest mb-2">Pendientes</div>
+                <div class="text-4xl font-bold text-[#9d2449] leading-none">{{ $pendientes }}</div>
+                <div class="text-[0.8rem] font-semibold text-gray-400 mt-2 italic">por entregar</div>
+            </div>
+            <div class="bg-white border border-[#1E2D45] border-l-4 border-l-orange-500 rounded-xl p-6 shadow-sm">
+                <div class="text-lg font-bold text-gray-800 uppercase tracking-widest mb-2">Avance</div>
+                <div class="text-4xl font-bold text-orange-500 leading-none">{{ $porcentaje }}%</div>
+                <div class="text-[0.8rem] font-semibold text-gray-400 mt-2 italic">eficiencia actual</div>
+            </div>
+        </div>
+
+        {{-- SECCIÓN DE GRÁFICAS --}}
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white border border-[#1E2D45] rounded-xl p-6 flex flex-col h-[400px]">
+                <h3 class="text-lg font-bold text-gray-800 uppercase tracking-widest mb-6 border-b pb-2">Distribución Global</h3>
+                <div class="flex-grow relative">
+                    <canvas id="canvasPastel"></canvas>
+                </div>
             </div>
 
-            <select wire:model.live="regionSeleccionada"
-                style="width:100%;background:#FFFFFF;border:1px solid #1E2D45;border-radius:8px;padding:0.7rem 1rem;color:#000000;font-family:'IBM Plex Mono',monospace;font-size:0.8rem;margin-bottom:1.2rem;cursor:pointer;">
-                <option value="">— Selecciona una región —</option>
-                @foreach ($regiones as $region)
-                    <option value="{{ $region }}">{{ $region }}</option>
-                @endforeach
-            </select>
-
-            @if ($regionSeleccionada !== '' && count($pendientesFiltrados) === 0)
-                <div style="text-align:center;padding:2rem;font-family:'IBM Plex Mono',monospace;font-size:0.8rem;color:#ec660c;">
-                    ✓ Todas las delegaciones de esta región han entregado
+            <div class="lg:col-span-2 bg-white border border-[#1E2D45] rounded-xl p-6 flex flex-col h-[400px]">
+                <h3 class="text-lg font-bold text-gray-800 uppercase tracking-widest mb-6 border-b pb-2">Desempeño por Región</h3>
+                <div class="flex-grow relative">
+                    <canvas id="canvasRegion"></canvas>
                 </div>
-            @endif
+            </div>
+        </div>
 
-            @if (count($pendientesFiltrados) > 0)
-                <div style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:#9d2449;margin-bottom:0.8rem;letter-spacing:0.05em;">
-                    {{ count($pendientesFiltrados) }} DELEGACIÓN(ES) PENDIENTE(S)
-                </div>
-                <div style="display:flex;flex-direction:column;gap:0.5rem;">
+        {{-- FILTRO Y LISTADO --}}
+        <div class="bg-white border border-[#1E2D45] rounded-xl p-6 shadow-sm">
+            <div class="mb-6">
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">Filtrar por Región</label>
+                <select wire:model.live="regionSeleccionada" 
+                        class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-orange-500 outline-none transition-all">
+                    <option value="">— Todas las regiones —</option>
+                    @foreach ($regiones as $region)
+                        <option value="{{ $region }}">{{ $region }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            @if(count($pendientesFiltrados) > 0)
+                <div class="space-y-2">
+                    <p class="text-[10px] font-bold text-[#9d2449] uppercase mb-3">Sedes con entrega pendiente:</p>
                     @foreach ($pendientesFiltrados as $item)
-                        <div style="display:flex;align-items:center;gap:0.8rem;padding:0.7rem 1rem;background:#FFFFFF;border:1px solid #1E2D45;border-left:3px solid #9d2449;border-radius:8px;">
-                            <span style="font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:#9d2449;font-weight:600;min-width:70px;">
-                                {{ $item['delegacion'] }}
-                            </span>
-                            <span style="font-size:0.8rem;color:#6B7FA3;">
-                                {{ $item['sede'] }}
-                            </span>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 border-l-4 border-[#9d2449] rounded-r-lg group hover:bg-red-50 transition-colors">
+                            <span class="font-mono text-xs font-bold text-gray-700">{{ $item['delegacion'] }}</span>
+                            <span class="text-xs text-gray-500 group-hover:text-gray-700">{{ $item['sede'] }}</span>
                         </div>
                     @endforeach
                 </div>
+            @else
+                <div class="text-center py-6">
+                    <p class="text-xs text-gray-400 italic">No hay pendientes en esta selección.</p>
+                </div>
             @endif
         </div>
-
     </main>
 
-    <script>
-        document.addEventListener('livewire:navigated', iniciar);
-        document.addEventListener('DOMContentLoaded', iniciar);
+    {{-- ═══════════════ FOOTER ═══════════════ --}}
+    <footer class="bg-[#9d2449]">
+        <div class="bg-[#f18c21] h-3"></div>
 
-        function iniciar() {
-            const ctx = document.getElementById('graficaPastel');
-            if (ctx) {
-                new Chart(ctx.getContext('2d'), {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Entregado', 'Pendiente'],
-                        datasets: [{
-                            data: [{{ $entregados }}, {{ $pendientes }}],
-                            backgroundColor: ['#ec660c', '#9d2449'],
-                            borderColor: ['#FFFFFF', '#FFFFFF'],
-                            borderWidth: 4,
-                            hoverOffset: 8,
-                        }],
-                    },
-                    options: {
-                        cutout: '72%',
-                        plugins: { legend: { display: false } },
-                        animation: { animateRotate: true, duration: 1000 },
-                    }
-                });
-            }
+        <div class="py-4 px-6 text-center">
 
-            const regionData = @json($porRegion);
-            const ctxRegion = document.getElementById('graficaRegion');
-            if (ctxRegion) {
-                new Chart(ctxRegion.getContext('2d'), {
-                    type: 'bar',
-                    data: {
-                        labels: regionData.map(r => r.region.replace('REGIÓN ', '').replace('REGION ', '')),
-                        datasets: [
-                            {
-                                label: 'Entregados',
-                                data: regionData.map(r => r.entregados),
-                                backgroundColor: '#ec660c',
-                                borderRadius: 4,
-                            },
-                            {
-                                label: 'Pendientes',
-                                data: regionData.map(r => r.pendientes),
-                                backgroundColor: '#9d2449',
-                                borderRadius: 4,
-                            }
-                        ],
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { labels: { color: '#6B7FA3', font: { family: 'IBM Plex Mono' } } }
-                        },
-                        scales: {
-                            x: { ticks: { color: '#6B7FA3' }, grid: { color: '#1E2D45' } },
-                            y: { ticks: { color: '#6B7FA3' }, grid: { color: '#1E2D45' } },
-                        }
-                    }
-                });
-            }
+            {{-- Logo La Unidad visible solo en móvil --}}
+            <div class="flex justify-center mb-3 md:hidden">
+                <img src="{{ asset('images/logounidad@4x-8.png') }}"
+                    alt="La Unidad - Nuestra Fortaleza"
+                    class="h-12 w-auto">
+            </div>
+
+            <p class="text-white text-sm">
+                Sindicato Nacional de Trabajadores de la Educación &mdash; Sección 56 Veracruz
+            </p>
+            <p class="text-white/70 text-xs mt-1">
+                &copy; {{ date('Y') }} Todos los derechos reservados
+            </p>
+        </div>
+    </footer>    
+
+    {{-- 3. SCRIPTS DE CONTROL --}}
+<script>
+    var instanceP = null;
+    var instanceR = null;
+
+    function initDashboard() {
+        // 1. Limpieza total de instancias previas
+        if (instanceP) { instanceP.destroy(); instanceP = null; }
+        if (instanceR) { instanceR.destroy(); instanceR = null; }
+
+        const ctxP = document.getElementById('canvasPastel');
+        const ctxR = document.getElementById('canvasRegion');
+
+        // 2. Gráfica de Pastel
+        if (ctxP) {
+            instanceP = new Chart(ctxP, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Entregado', 'Pendiente'],
+                    datasets: [{
+                        data: [{{ $entregados }}, {{ $pendientes }}],
+                        backgroundColor: ['#ec660c', '#9d2449'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { maintainAspectRatio: false, cutout: '70%', plugins: { legend: { display: false } } }
+            });
         }
-    </script>
+
+        // 3. Gráfica de Barras
+        if (ctxR) {
+            const rawData = @json($porRegion);
+            instanceR = new Chart(ctxR, {
+                type: 'bar',
+                data: {
+                    labels: rawData.map(r => r.region.replace('REGIÓN ', '').replace('REGION ', '')),
+                    datasets: [{
+                        label: 'Sedes Entregadas',
+                        data: rawData.map(r => r.entregados),
+                        backgroundColor: '#ec660c',
+                        borderRadius: 4
+                    }]
+                },
+                options: { 
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+    }
+
+    // A. Carga inicial y navegación con Livewire SPA
+    document.addEventListener('livewire:navigated', initDashboard);
+    document.addEventListener('DOMContentLoaded', initDashboard);
+
+    // B. ESTA ES LA CLAVE: Se ejecuta después de cada cambio en el componente (como el select)
+    document.addEventListener('livewire:initialized', () => {
+        Livewire.hook('morph.updated', ({ component, el }) => {
+            // Solo reiniciamos si el elemento que cambió contiene nuestras gráficas
+            if (document.getElementById('canvasPastel') || document.getElementById('canvasRegion')) {
+                initDashboard();
+            }
+        });
+    });
+</script>
 </div>

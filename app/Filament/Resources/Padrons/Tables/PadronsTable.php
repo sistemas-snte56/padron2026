@@ -11,7 +11,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\SelectFilter;
-
 use Filament\Actions\Action;
 use App\Models\Padron;
 
@@ -29,17 +28,19 @@ class PadronsTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('delegacion')
-                    ->label('Delegación')
+                    ->label('Delegación / Nivel')
                     ->searchable()
-                    ->sortable(),
-                TextColumn::make('nivel')
-                    ->label('Nivel')
-                    ->searchable()
+                    ->sortable()
+                    ->formatStateUsing(fn ($record) =>
+                        "{$record->delegacion}\n{$record->nivel}"
+                    )
                     ->wrap(),
+
                 TextColumn::make('sede')
                     ->label('Sede')
                     ->searchable()
-                    ->sortable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
                 IconColumn::make('padron')
                     ->label('Padrón')
                     ->boolean()
@@ -50,14 +51,12 @@ class PadronsTable
 
                 TextColumn::make('updated_at')
                     ->label('Última Modificación')
-                    ->dateTime('d/m/Y h:i A') // Formato legible: Ej. 22/05/2026 11:00 AM
-                    ->timezone('America/Mexico_City') // Ajusta a tu zona horaria si es necesario
-                    ->sortable() // Permite ordenar de más antiguos a más recientes
-                    ->toggleable(isToggledHiddenByDefault: false), // Permite al usuario ocultarla/mostrarla si quiere
-                                        
+                    ->dateTime('d/m/Y h:i A')
+                    ->timezone('America/Mexico_City')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
             ])
             ->filters([
-
                 SelectFilter::make('region')
                     ->label('Región')
                     ->options(Padron::select('region')->distinct()->orderBy('region')->pluck('region', 'region'))
@@ -68,34 +67,46 @@ class PadronsTable
                     ->trueLabel('Entregados')
                     ->falseLabel('Pendientes')
                     ->placeholder('Todos'),
-
-
             ])
-            ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+            // CAMBIO 1: Se usa ->actions() para fijar los elementos como una columna al final
+            ->actions([
+
+
                 Action::make('togglePadron')
-                    ->label(fn (Padron $record) => $record->padron ? 'Quitar' : 'Entregar')
+                    ->iconButton()
+                    ->tooltip(fn (Padron $record) => $record->padron ? 'Quitar Padrón' : 'Marcar Entregado')
+                    ->label(fn (Padron $record) => $record->padron ? 'Quitar Padrón' : 'Marcar Entregado')
                     ->icon(fn (Padron $record) => $record->padron ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
                     ->color(fn (Padron $record) => $record->padron ? 'danger' : 'success')
-                    ->action(fn (Padron $record) => $record->update(['padron' => !$record->padron]))
-                    ->requiresConfirmation(fn (Padron $record) => !$record->padron)
-                    ->modalHeading('Confirmar acción')
-                    ->modalDescription(fn (Padron $record) => "¿Confirmas que la delegación {$record->delegacion} aún no ha entregado su padrón?")
-                    ->modalSubmitActionLabel('Sí, confirmar'),
-                
+                    ->iconSize('xl')
+                    
+                    ->requiresConfirmation()
+                    ->modalHeading('Actualizar Estado del Padrón')
+                    ->modalSubmitActionLabel('Sí, confirmar cambio')
+
+                    ->modalDescription(function (Padron $record) {
+                        if ($record->padron) {
+                            return "¿Estás seguro de revertir el estado? La delegación {$record->delegacion} volverá a quedar como PENDIENTE.";
+                        }
+                        
+                        return "¿Confirmas que la delegación {$record->delegacion} ya entregó formalmente su padrón?";
+                    })
+                    
+                    ->action(function (Padron $record) {
+                        $record->update([
+                            'padron' => ! $record->padron,
+                        ]);
+                    }),
+                ViewAction::make()->iconButton(),
+                EditAction::make()->iconButton(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
             ])
-            // Configura las opciones del menú desplegable de paginación
             ->paginationPageOptions([100, 150, 200])
-            
-            // Define cuántos registros se muestran inmediatamente al cargar la página
             ->defaultPaginationPageOption(100)
-
-            ->defaultSort('delegacion','asc');
+            ->defaultSort('delegacion', 'asc');
     }
 }

@@ -47,6 +47,14 @@ class PadronsTable
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')
                     ->falseColor('danger'),
+
+                TextColumn::make('updated_at')
+                    ->label('Última Modificación')
+                    ->dateTime('d/m/Y h:i A') // Formato legible: Ej. 22/05/2026 11:00 AM
+                    ->timezone('America/Mexico_City') // Ajusta a tu zona horaria si es necesario
+                    ->sortable() // Permite ordenar de más antiguos a más recientes
+                    ->toggleable(isToggledHiddenByDefault: false), // Permite al usuario ocultarla/mostrarla si quiere
+                                        
             ])
             ->filters([
 
@@ -82,6 +90,12 @@ class PadronsTable
                     DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('id');
+            // Configura las opciones del menú desplegable de paginación
+            ->paginationPageOptions([100, 150, 200])
+            
+            // Define cuántos registros se muestran inmediatamente al cargar la página
+            ->defaultPaginationPageOption(100)
+
+            ->defaultSort('delegacion','asc');
     }
 }
